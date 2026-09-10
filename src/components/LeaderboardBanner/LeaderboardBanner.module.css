@@ -1,0 +1,687 @@
+.bannerWrapper {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bannerCard {
+  position: relative;
+  width: 100%;
+  background-color: #161827;
+  background-image: 
+    radial-gradient(circle at 75% 30%, rgba(245, 158, 11, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+    linear-gradient(180deg, #191b2c 0%, #131522 100%);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 40px -15px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bannerCard:hover {
+  border-color: rgba(245, 158, 11, 0.38);
+  box-shadow: 
+    0 24px 50px -15px rgba(0, 0, 0, 0.75),
+    0 0 25px -5px rgba(245, 158, 11, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Ambient glow accents inside the card */
+.ambientGlow {
+  position: absolute;
+  top: -60px;
+  right: 15%;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.16) 0%, rgba(245, 158, 11, 0) 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bannerInner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 34px 40px;
+  gap: 32px;
+}
+
+/* ==========================================================================
+   LEFT COLUMN: Text, Badges, Info, CTA
+   ========================================================================== */
+.leftContent {
+  flex: 1;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Top Badge Row */
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.indexBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 3px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.stageBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(26, 23, 20, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fcd34d;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.12);
+}
+
+.stageIcon {
+  color: #f59e0b;
+  display: flex;
+  align-items: center;
+  animation: pulseIcon 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseIcon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px #f59e0b);
+  }
+}
+
+/* Titles */
+.mainTitle {
+  margin: 0 0 14px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleWhite {
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.titleGold {
+  background: linear-gradient(135deg, #fce07a 0%, #f59e0b 50%, #ea580c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 14px rgba(245, 158, 11, 0.35));
+}
+
+/* Description */
+.description {
+  margin: 0 0 22px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #9ca3af;
+  max-width: 440px;
+  font-weight: 400;
+}
+
+/* Prize Pool Badge */
+.poolBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.07);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #d1d5db;
+  backdrop-filter: blur(8px);
+}
+
+.poolTrophy {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.poolLabel {
+  color: #9ca3af;
+}
+
+.poolAmount {
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.poolSuffix {
+  color: #9ca3af;
+}
+
+/* CTA Button */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(22, 24, 39, 0.85);
+  border: 1px solid #d97706;
+  color: #fcd34d;
+  padding: 12px 26px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.3),
+    0 0 14px rgba(245, 158, 11, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.ctaButton:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #f59e0b;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 0 22px rgba(245, 158, 11, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+.ctaButton:active {
+  transform: translateY(0);
+}
+
+.ctaArrow {
+  transition: transform 0.25s ease;
+}
+
+.ctaButton:hover .ctaArrow {
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   RIGHT COLUMN: Leaderboard Illustration & Ranking Cards
+   ========================================================================== */
+.rightIllustration {
+  flex: 1.25;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 290px;
+  max-width: 580px;
+  user-select: none;
+}
+
+/* Background Chart and Glow Graphics */
+.chartBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Sparkles container */
+.sparklesLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.sparkle {
+  position: absolute;
+  color: #fde047;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.sparkle1 {
+  top: 18%;
+  left: 48%;
+  animation-delay: 0.2s;
+}
+
+.sparkle2 {
+  top: 8%;
+  left: 36%;
+  animation-delay: 1.1s;
+}
+
+.sparkle3 {
+  top: 24%;
+  left: 64%;
+  animation-delay: 1.8s;
+}
+
+.sparkle4 {
+  top: 12%;
+  left: 56%;
+  animation-delay: 0.7s;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25) rotate(45deg);
+    filter: drop-shadow(0 0 6px #fde047);
+  }
+}
+
+/* Trophy Area */
+.trophyContainer {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: floatTrophy 4s ease-in-out infinite;
+}
+
+@keyframes floatTrophy {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, -6px);
+  }
+}
+
+.trophySvg {
+  width: 108px;
+  height: 108px;
+  filter: drop-shadow(0 6px 16px rgba(245, 158, 11, 0.45));
+}
+
+/* Floor spotlight / rings */
+.podiumBaseRing {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  height: 60px;
+  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.08) 45%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Ranking Cards Grid */
+.podiumCards {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr 1.12fr 1fr;
+  align-items: flex-end;
+  gap: 14px;
+  width: 100%;
+  padding: 0 10px 8px 10px;
+  box-sizing: border-box;
+}
+
+/* Individual Card Styles */
+.rankCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px 14px 12px;
+  background: rgba(18, 20, 32, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.7);
+  cursor: default;
+}
+
+.rankCard:hover {
+  transform: translateY(-5px);
+}
+
+/* Rank 1 (User A) - Central & Elevated */
+.rankCardFirst {
+  height: 98px;
+  border: 1px solid rgba(245, 158, 11, 0.7);
+  background: linear-gradient(180deg, rgba(35, 30, 24, 0.9) 0%, rgba(18, 20, 32, 0.95) 100%);
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.8),
+    0 0 25px rgba(245, 158, 11, 0.22),
+    inset 0 1px 1px rgba(245, 158, 11, 0.4);
+}
+
+.rankCardFirst:hover {
+  border-color: #f59e0b;
+  box-shadow: 
+    0 14px 34px -5px rgba(0, 0, 0, 0.9),
+    0 0 35px rgba(245, 158, 11, 0.35),
+    inset 0 1px 2px rgba(245, 158, 11, 0.6);
+}
+
+/* Rank 2 (User B) - Blue neon accent */
+.rankCardSecond {
+  height: 84px;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  background: linear-gradient(180deg, rgba(20, 28, 45, 0.85) 0%, rgba(18, 20, 32, 0.95) 100%);
+  box-shadow: 
+    0 8px 24px -6px rgba(0, 0, 0, 0.7),
+    0 0 18px rgba(59, 130, 246, 0.16),
+    inset 0 1px 1px rgba(59, 130, 246, 0.3);
+}
+
+.rankCardSecond:hover {
+  border-color: #60a5fa;
+  box-shadow: 
+    0 12px 28px -6px rgba(0, 0, 0, 0.8),
+    0 0 26px rgba(59, 130, 246, 0.3),
+    inset 0 1px 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Rank 3 (User C) - Bronze/Orange accent */
+.rankCardThird {
+  height: 84px;
+  border: 1px solid rgba(234, 88, 12, 0.55);
+  background: linear-gradient(180deg, rgba(36, 24, 20, 0.85) 0%, rgba(18, 20, 32, 0.95) 100%);
+  box-shadow: 
+    0 8px 24px -6px rgba(0, 0, 0, 0.7),
+    0 0 18px rgba(234, 88, 12, 0.16),
+    inset 0 1px 1px rgba(234, 88, 12, 0.3);
+}
+
+.rankCardThird:hover {
+  border-color: #f97316;
+  box-shadow: 
+    0 12px 28px -6px rgba(0, 0, 0, 0.8),
+    0 0 26px rgba(234, 88, 12, 0.3),
+    inset 0 1px 2px rgba(234, 88, 12, 0.5);
+}
+
+/* Circular Badges floating on top border */
+.badgeCircle {
+  position: absolute;
+  top: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.badgeFirst {
+  background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+  border: 2px solid #fde68a;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+}
+
+.badgeSecond {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: 2px solid #93c5fd;
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.6);
+}
+
+.badgeThird {
+  background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%);
+  border: 2px solid #fdba74;
+  box-shadow: 0 0 14px rgba(234, 88, 12, 0.6);
+}
+
+/* User Names */
+.userName {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+/* Score / VE amount */
+.userScore {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+}
+
+.scoreFirst {
+  color: #fbbf24;
+}
+
+.scoreSecond {
+  color: #93c5fd;
+}
+
+.scoreThird {
+  color: #fdba74;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN: Desktop, Tablet, Mobile
+   ========================================================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .bannerInner {
+    padding: 28px 30px;
+    gap: 24px;
+  }
+
+  .mainTitle {
+    font-size: 34px;
+  }
+
+  .rightIllustration {
+    min-height: 260px;
+  }
+
+  .trophySvg {
+    width: 96px;
+    height: 96px;
+  }
+
+  .podiumCards {
+    gap: 10px;
+  }
+}
+
+/* Mobile & Small Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+  .bannerInner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px 20px;
+    gap: 28px;
+  }
+
+  .leftContent {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .badgeRow {
+    justify-content: center;
+  }
+
+  .mainTitle {
+    font-size: 32px;
+    text-align: center;
+  }
+
+  .description {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .poolBadge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ctaButton {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .rightIllustration {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    min-height: 250px;
+  }
+
+  .trophyContainer {
+    top: 4px;
+  }
+
+  .trophySvg {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+/* Extra Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .bannerCard {
+    border-radius: 16px;
+  }
+
+  .bannerInner {
+    padding: 20px 14px;
+    gap: 24px;
+  }
+
+  .mainTitle {
+    font-size: 27px;
+  }
+
+  .badgeRow {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .poolBadge {
+    padding: 6px 12px;
+    font-size: 11.5px;
+  }
+
+  .podiumCards {
+    gap: 6px;
+    padding: 0 4px 6px 4px;
+  }
+
+  .rankCard {
+    padding: 20px 4px 10px 4px;
+  }
+
+  .rankCardFirst {
+    height: 90px;
+  }
+
+  .rankCardSecond,
+  .rankCardThird {
+    height: 78px;
+  }
+
+  .userName {
+    font-size: 12px;
+  }
+
+  .userScore {
+    font-size: 10.5px;
+  }
+
+  .badgeCircle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    top: -12px;
+  }
+
+  .trophySvg {
+    width: 80px;
+    height: 80px;
+  }
+}
