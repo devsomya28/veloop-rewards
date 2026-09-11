@@ -6,7 +6,8 @@
 .bannerCard {
   position: relative;
   width: 100%;
-  min-height: 420px;
+  min-height: 410px;
+  max-height: 450px;
   background-color: #161827;
   background-image: 
     radial-gradient(circle at 75% 40%, rgba(37, 99, 235, 0.14) 0%, transparent 60%),
@@ -53,8 +54,8 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 38px 44px;
-  gap: 36px;
+  padding: 24px 36px;
+  gap: 28px;
   box-sizing: border-box;
 }
 
@@ -119,12 +120,12 @@
 
 /* Main Heading */
 .mainTitle {
-  margin: 0 0 14px 0;
+  margin: 0 0 10px 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 40px;
+  font-size: 30px;
   font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.5px;
   display: flex;
   flex-direction: column;
 }
@@ -144,11 +145,11 @@
 
 /* Description */
 .description {
-  margin: 0 0 22px 0;
-  font-size: 14.5px;
-  line-height: 1.6;
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  line-height: 1.55;
   color: #94a3b8;
-  max-width: 440px;
+  max-width: 420px;
   font-weight: 400;
 }
 
@@ -157,8 +158,8 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 26px;
+  gap: 8px;
+  margin-bottom: 18px;
 }
 
 .infoChip {
@@ -265,15 +266,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 330px;
-  max-width: 580px;
+  min-height: 250px;
+  max-width: 520px;
   user-select: none;
 }
 
 .visualContainer {
   position: relative;
   width: 100%;
-  height: 330px;
+  height: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -417,24 +418,24 @@
   }
 
   .bannerInner {
-    padding: 32px 30px;
-    gap: 24px;
+    padding: 22px 26px;
+    gap: 20px;
   }
 
   .mainTitle {
-    font-size: 34px;
+    font-size: 27px;
   }
 
   .description {
-    font-size: 14px;
+    font-size: 12.5px;
   }
 
   .rightIllustration {
-    min-height: 290px;
+    min-height: 220px;
   }
 
   .visualContainer {
-    height: 290px;
+    height: 220px;
   }
 }
 
@@ -442,13 +443,14 @@
 @media (max-width: 768px) {
   .bannerCard {
     min-height: auto;
+    max-height: none;
   }
 
   .bannerInner {
     flex-direction: column-reverse;
     align-items: stretch;
-    padding: 28px 22px;
-    gap: 28px;
+    padding: 20px 18px;
+    gap: 18px;
   }
 
   .leftContent {
@@ -462,7 +464,7 @@
   }
 
   .mainTitle {
-    font-size: 32px;
+    font-size: 26px;
     text-align: center;
   }
 
@@ -478,36 +480,36 @@
 
   .ctaButton {
     width: 100%;
-    max-width: 320px;
+    max-width: 300px;
     margin: 0 auto;
   }
 
   .rightIllustration {
     width: 100%;
-    max-width: 420px;
-    min-height: 240px;
+    max-width: 380px;
+    min-height: 190px;
     margin: 0 auto;
   }
 
   .visualContainer {
-    height: 240px;
+    height: 190px;
   }
 }
 
 /* Extra Small Mobile (max-width: 480px) */
 @media (max-width: 480px) {
   .bannerCard {
-    border-radius: 16px;
+    border-radius: 14px;
   }
 
   .bannerInner {
-    padding: 22px 16px;
-    gap: 22px;
+    padding: 16px 12px;
+    gap: 16px;
   }
 
   .mainTitle {
-    font-size: 28px;
-    letter-spacing: -0.4px;
+    font-size: 24px;
+    letter-spacing: -0.3px;
   }
 
   .badgeRow {
@@ -516,20 +518,149 @@
   }
 
   .chipsRow {
-    gap: 8px;
+    gap: 6px;
   }
 
   .infoChip {
-    padding: 5px 11px;
-    font-size: 11.5px;
+    padding: 4px 10px;
+    font-size: 11px;
   }
 
   .rightIllustration {
-    max-width: 340px;
-    min-height: 200px;
+    max-width: 300px;
+    min-height: 160px;
   }
 
   .visualContainer {
-    height: 200px;
+    height: 160px;
   }
+}
+
+/* Interactive Simulation Classes */
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ctaButtonDisabled {
+  opacity: 0.85;
+  cursor: wait !important;
+  pointer-events: none;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.3) !important;
+}
+
+.resetBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.resetBtn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  color: #ffffff;
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.rewardAlert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  color: #34d399;
+  font-size: 13px;
+  font-weight: 600;
+  box-sizing: border-box;
+  animation: slideDownAlert 0.3s ease forwards;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+}
+
+.rewardLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rewardHighlight {
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.balancePill {
+  font-size: 11.5px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  color: #a7f3d0;
+}
+
+@keyframes slideDownAlert {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.screenInteractive {
+  cursor: pointer;
+  outline: none;
+}
+
+.screenInteractive:focus-visible rect {
+  stroke: #38bdf8;
+  stroke-width: 2.5;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  margin-bottom: 14px;
+}
+
+.pulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  animation: blinkDot 1.2s infinite ease-in-out;
+}
+
+@keyframes blinkDot {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 4px #38bdf8); }
+}
+
+.coinCelebrate {
+  animation: coinCelebration 1.4s ease-in-out infinite alternate !important;
+}
+
+@keyframes coinCelebration {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-8px) scale(1.12); filter: drop-shadow(0 0 12px #38bdf8); }
 }

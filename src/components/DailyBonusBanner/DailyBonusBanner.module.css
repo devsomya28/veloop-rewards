@@ -589,3 +589,72 @@
     font-size: 10px;
   }
 }
+
+/* Functional Claim Styles */
+.ctaButtonClaimed {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.45) !important;
+  color: #34d399 !important;
+  cursor: default !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2) !important;
+}
+
+.dayJustClaimed {
+  animation: claimDayPop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes claimDayPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  65% { transform: scale(1.35); box-shadow: 0 0 18px #f59e0b; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.claimedAlert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #34d399;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  animation: slideInClaim 0.3s ease forwards;
+}
+
+@keyframes slideInClaim {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.resetStreakBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.resetStreakBtn:hover {
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.coinCelebrate {
+  animation: coinBounce 1.2s ease-in-out infinite alternate !important;
+}
+
+@keyframes coinBounce {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-7px) scale(1.1); filter: drop-shadow(0 0 10px #f59e0b); }
+}

@@ -1,5 +1,6 @@
-import React from 'react';
-import { Trophy, ArrowRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Trophy, ArrowRight, Sparkles, TrendingUp, ChevronUp, Users, Shield } from 'lucide-react';
+import Modal from '../common/Modal';
 import styles from './LeaderboardBanner.module.css';
 
 /**
@@ -12,6 +13,8 @@ import styles from './LeaderboardBanner.module.css';
  * - Ornate vector championship trophy with crown and sparkles
  * - Rising performance line chart and ascending bar chart backdrop
  * - Three-tier podium ranking cards (User A, User B, User C)
+ * - Interactive ranking modal with real-time demo standings, rank movement (#4 -> #3),
+ *   and progress toward the next rank.
  * - Micro-animations: trophy float, sparkle twinkling, live badge pulse, and interactive hover lifts
  */
 export const LeaderboardBanner = ({
@@ -49,6 +52,25 @@ export const LeaderboardBanner = ({
     },
   ],
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('weekly');
+
+  const fullStandings = [
+    { rank: '01', name: 'User A', score: '12,450 VEs', isTop: true, badge: '🥇' },
+    { rank: '02', name: 'User B', score: '11,820 VEs', isTop: true, badge: '🥈' },
+    { rank: '03', name: 'User C', score: '10,970 VEs', isTop: true, badge: '🥉' },
+    { rank: '04', name: 'You (User D)', score: '10,690 VEs', isCurrentUser: true },
+    { rank: '05', name: 'Alex_Crypto', score: '9,840 VEs' },
+    { rank: '06', name: 'Sarah_K', score: '9,210 VEs' },
+    { rank: '07', name: 'DevSomya', score: '8,950 VEs' },
+    { rank: '08', name: 'Elena_R', score: '8,420 VEs' },
+  ];
+
+  const handleOpenRankings = (e) => {
+    setIsModalOpen(true);
+    if (onCtaClick) onCtaClick(e);
+  };
+
   return (
     <div className={styles.bannerWrapper}>
       <div className={styles.bannerCard}>
@@ -78,6 +100,14 @@ export const LeaderboardBanner = ({
             {/* Subtitle / Description */}
             <p className={styles.description}>{description}</p>
 
+            {/* Current User Standing Pill */}
+            <div className={styles.userStandingPill}>
+              <span>Your Standing: <strong>#4 • 10,690 VEs</strong></span>
+              <span className={styles.momentumTag}>
+                <TrendingUp size={11} strokeWidth={2.5} /> +1 this week
+              </span>
+            </div>
+
             {/* Current Pool Pill */}
             <div className={styles.poolBadge}>
               <Trophy size={16} className={styles.poolTrophy} strokeWidth={2.2} />
@@ -90,7 +120,8 @@ export const LeaderboardBanner = ({
             <button
               type="button"
               className={styles.ctaButton}
-              onClick={onCtaClick}
+              onClick={handleOpenRankings}
+              aria-label="Check competitive leaderboard rankings"
             >
               <span>{ctaText}</span>
               <ArrowRight size={17} className={styles.ctaArrow} strokeWidth={2.4} />
@@ -365,6 +396,107 @@ export const LeaderboardBanner = ({
           </div>
         </div>
       </div>
+
+      {/* Interactive Leaderboard Rankings Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={
+          <>
+            <Trophy size={20} color="#f59e0b" />
+            <span>Leaderboard Standings</span>
+          </>
+        }
+        subtitle="Stage 01: Active Competition • Season 1 (Demo Snapshot)"
+        maxWidth="560px"
+      >
+        {/* User Standing Highlight Card */}
+        <div className={styles.modalUserHighlight}>
+          <div className={styles.highlightTop}>
+            <div className={styles.highlightUser}>
+              <div className={styles.userAvatarCircle}>U</div>
+              <div>
+                <div className={styles.highlightName}>You (User D)</div>
+                <div className={styles.highlightScore}>10,690 VEs Earned</div>
+              </div>
+            </div>
+
+            {/* Rank Movement Indicator */}
+            <div className={styles.rankMovementBadge}>
+              <TrendingUp size={14} />
+              <span>Rank Movement: #4 → #3</span>
+            </div>
+          </div>
+
+          {/* Progress to Next Rank */}
+          <div className={styles.progressSection}>
+            <div className={styles.progressMeta}>
+              <span>Target: Rank #3 (User C • 10,970 VEs)</span>
+              <span className={styles.progressNeeded}>280 VEs needed</span>
+            </div>
+            <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={85} aria-valuemin={0} aria-valuemax={100}>
+              <div className={styles.progressBarFill} style={{ width: '85%' }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Tabs */}
+        <div className={styles.tabRow} role="tablist">
+          <button
+            type="button"
+            className={`${styles.tabBtn} ${activeTab === 'weekly' ? styles.tabBtnActive : ''}`}
+            onClick={() => setActiveTab('weekly')}
+            role="tab"
+            aria-selected={activeTab === 'weekly'}
+          >
+            Weekly Sprint
+          </button>
+          <button
+            type="button"
+            className={`${styles.tabBtn} ${activeTab === 'alltime' ? styles.tabBtnActive : ''}`}
+            onClick={() => setActiveTab('alltime')}
+            role="tab"
+            aria-selected={activeTab === 'alltime'}
+          >
+            All-Time
+          </button>
+          <button
+            type="button"
+            className={`${styles.tabBtn} ${activeTab === 'league' ? styles.tabBtnActive : ''}`}
+            onClick={() => setActiveTab('league')}
+            role="tab"
+            aria-selected={activeTab === 'league'}
+          >
+            Diamond League
+          </button>
+        </div>
+
+        {/* Full Leaderboard List */}
+        <div className={styles.rowsContainer}>
+          {fullStandings.map((user) => {
+            const isUser = user.isCurrentUser;
+            return (
+              <div
+                key={user.rank}
+                className={`${styles.standingRow} ${isUser ? styles.standingRowCurrent : ''}`}
+              >
+                <div className={styles.rowLeft}>
+                  <span className={`${styles.rowRank} ${user.isTop ? styles.rowRankTop : ''}`}>
+                    {user.badge ? user.badge : `#${user.rank}`}
+                  </span>
+                  <span className={styles.rowUser}>
+                    {user.name}
+                    {isUser && <span className={styles.youTag}>YOU</span>}
+                  </span>
+                </div>
+                <div className={`${styles.rowScore} ${isUser ? styles.rowScoreCurrent : ''}`}>
+                  {user.score}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
     </div>
   );
 };

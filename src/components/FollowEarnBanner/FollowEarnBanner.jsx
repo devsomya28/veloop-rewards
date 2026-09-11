@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ArrowRight,
   Gift,
@@ -7,7 +7,11 @@ import {
   Megaphone,
   Heart,
   Bell,
+  Check,
+  Sparkles,
+  ExternalLink,
 } from 'lucide-react';
+import Modal from '../common/Modal';
 import styles from './FollowEarnBanner.module.css';
 
 /**
@@ -16,9 +20,11 @@ import styles from './FollowEarnBanner.module.css';
  * Implements Banner 04 for VELOOP Rewards: "Follow & Earn"
  * Features:
  * - Royal purple/violet identity on #161827
- * - Center smartphone mockup showcasing @velooprewards profile
+ * - Interactive social channel selector (Discord, X, Telegram, YouTube)
+ * - Smartphone mockup reflecting selected channel's profile in real-time
  * - Orbiting floating social element orbs (Community, Star, Megaphone, Heart)
- * - Campaign reward unlock card (+500 SVEs)
+ * - Dynamic campaign reward unlock card (+500 SVEs DEMO)
+ * - Social Campaign Quests Discovery modal with verification simulation
  * - Responsive 3-column desktop to mobile layout
  */
 export const FollowEarnBanner = ({
@@ -27,10 +33,76 @@ export const FollowEarnBanner = ({
   title = 'Follow & Earn',
   description = 'Follow VELOOP Rewards on our official channels and participate in eligible social campaigns to unlock rewards.',
   ctaText = 'Explore Our Channels',
-  rewardAmount = '+500 SVEs',
-  rewardCampaign = 'Demo Campaign',
   onCtaClick = () => {},
 }) => {
+  const [selectedChannelId, setSelectedChannelId] = useState('discord');
+  const [isQuestsModalOpen, setIsQuestsModalOpen] = useState(false);
+  const [completedQuests, setCompletedQuests] = useState([]);
+
+  const channels = [
+    {
+      id: 'discord',
+      name: 'Discord',
+      handle: '@veloop_discord',
+      rewardAmount: '+500 SVEs',
+      campaign: 'Community Onboarding Drop',
+      status: 'Active • Role Verification',
+      followers: '38.4K Members',
+      avatarLetter: 'D',
+      accentColor: '#5865F2',
+      questDesc: 'Join our official Discord guild and introduce yourself in #general.',
+    },
+    {
+      id: 'x',
+      name: 'X (Twitter)',
+      handle: '@velooprewards',
+      rewardAmount: '+250 SVEs',
+      campaign: 'Viral Follower Sprint',
+      status: 'Active • Follow & Repost',
+      followers: '24.5K Followers',
+      avatarLetter: 'X',
+      accentColor: '#0f172a',
+      questDesc: 'Follow @velooprewards on X and retweet our weekly competition post.',
+    },
+    {
+      id: 'telegram',
+      name: 'Telegram',
+      handle: '@veloop_official',
+      rewardAmount: '+150 SVEs',
+      campaign: 'Instant Signals Channel',
+      status: 'Active • Announcements Drop',
+      followers: '19.8K Subscribers',
+      avatarLetter: 'T',
+      accentColor: '#0284c7',
+      questDesc: 'Join our broadcast channel for instant stage reset alerts.',
+    },
+    {
+      id: 'youtube',
+      name: 'YouTube',
+      handle: '@velooprewards',
+      rewardAmount: '+300 SVEs',
+      campaign: 'Feature Video Premiere',
+      status: 'Active • Watch & Subscribe',
+      followers: '12.2K Subscribers',
+      avatarLetter: 'Y',
+      accentColor: '#dc2626',
+      questDesc: 'Subscribe to our channel and watch the new Rewards walkthrough.',
+    },
+  ];
+
+  const currentChannel = channels.find((c) => c.id === selectedChannelId) || channels[0];
+
+  const handleOpenQuestsModal = (e) => {
+    setIsQuestsModalOpen(true);
+    if (onCtaClick) onCtaClick(e);
+  };
+
+  const handleSimulateClaim = (questId) => {
+    if (!completedQuests.includes(questId)) {
+      setCompletedQuests((prev) => [...prev, questId]);
+    }
+  };
+
   return (
     <div className={styles.bannerWrapper}>
       <section className={styles.bannerCard} aria-label="Follow VELOOP Rewards and Earn">
@@ -54,11 +126,31 @@ export const FollowEarnBanner = ({
             {/* Subtitle / Description */}
             <p className={styles.description}>{description}</p>
 
+            {/* Social Channel Selector Cards */}
+            <div className={styles.channelSelectorGrid} role="radiogroup" aria-label="Select social community channel">
+              {channels.map((ch) => {
+                const isActive = ch.id === selectedChannelId;
+                return (
+                  <button
+                    key={ch.id}
+                    type="button"
+                    className={`${styles.channelCard} ${isActive ? styles.channelCardActive : ''}`}
+                    onClick={() => setSelectedChannelId(ch.id)}
+                    role="radio"
+                    aria-checked={isActive}
+                  >
+                    <span className={styles.channelDot} />
+                    <span>{ch.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
             {/* CTA Button */}
             <button
               type="button"
               className={styles.ctaButton}
-              onClick={onCtaClick}
+              onClick={handleOpenQuestsModal}
               aria-label="Explore our official social channels"
             >
               <span>{ctaText}</span>
@@ -146,18 +238,18 @@ export const FollowEarnBanner = ({
                 <circle cx="226" cy="56" r="1.2" fill="#64748b" />
                 <circle cx="230" cy="56" r="1.2" fill="#64748b" />
 
-                {/* Avatar: Purple Circle with white "V" */}
-                <circle cx="177" cy="86" r="18" fill="url(#orbGrad)" stroke="#c084fc" strokeWidth="1" filter="url(#purpleGlow)" />
+                {/* Avatar: dynamically updates based on selected channel */}
+                <circle cx="177" cy="86" r="18" fill={currentChannel.accentColor} stroke="#c084fc" strokeWidth="1" filter="url(#purpleGlow)" />
                 <text
                   x="177"
                   y="92"
                   textAnchor="middle"
                   fill="#ffffff"
                   fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-                  fontSize="16"
+                  fontSize="15"
                   fontWeight="900"
                 >
-                  V
+                  {currentChannel.avatarLetter}
                 </text>
 
                 {/* Profile Name & Handle */}
@@ -170,22 +262,22 @@ export const FollowEarnBanner = ({
                   fontSize="10.5"
                   fontWeight="700"
                 >
-                  VELOOP Rewards
+                  VELOOP {currentChannel.name}
                 </text>
                 <text
                   x="177"
                   y="129"
                   textAnchor="middle"
-                  fill="#94a3b8"
+                  fill="#c084fc"
                   fontFamily="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
                   fontSize="8.5"
                   fontWeight="500"
                 >
-                  @velooprewards
+                  {currentChannel.handle}
                 </text>
 
-                {/* "Following" Pill Button & Bell Icon */}
-                <rect x="138" y="137" width="58" height="18" rx="9" fill="#2563eb" />
+                {/* "Following / Joined" Pill Button & Bell Icon */}
+                <rect x="138" y="137" width="58" height="18" rx="9" fill="#7c3aed" />
                 <text
                   x="167"
                   y="149.5"
@@ -195,7 +287,7 @@ export const FollowEarnBanner = ({
                   fontSize="8"
                   fontWeight="700"
                 >
-                  Following
+                  Active
                 </text>
 
                 <circle cx="206" cy="146" r="9" fill="#1e1b4b" stroke="#3730a3" strokeWidth="0.8" />
@@ -205,17 +297,17 @@ export const FollowEarnBanner = ({
                 />
                 <circle cx="206" cy="149.5" r="0.8" fill="#c7d2fe" />
 
-                {/* Profile Stats Row (Posts | Followers | Following) */}
+                {/* Profile Stats Row (Posts | Followers/Members | Verified) */}
                 <line x1="126" y1="168" x2="228" y2="168" stroke="#1e1838" strokeWidth="0.8" />
 
                 <text x="140" y="180" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">128</text>
-                <text x="140" y="188" textAnchor="middle" fill="#64748b" fontSize="6.5">Posts</text>
+                <text x="140" y="188" textAnchor="middle" fill="#64748b" fontSize="6.5">Quests</text>
 
-                <text x="177" y="180" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">24.5K</text>
-                <text x="177" y="188" textAnchor="middle" fill="#64748b" fontSize="6.5">Followers</text>
+                <text x="177" y="180" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">{currentChannel.followers.split(' ')[0]}</text>
+                <text x="177" y="188" textAnchor="middle" fill="#64748b" fontSize="6.5">Community</text>
 
-                <text x="214" y="180" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">8</text>
-                <text x="214" y="188" textAnchor="middle" fill="#64748b" fontSize="6.5">Following</text>
+                <text x="214" y="180" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">100%</text>
+                <text x="214" y="188" textAnchor="middle" fill="#64748b" fontSize="6.5">Verified</text>
 
                 {/* Grid placeholder for campaign posts */}
                 <rect x="124" y="196" width="31" height="31" rx="4" fill="#1e1838" />
@@ -228,37 +320,29 @@ export const FollowEarnBanner = ({
               </g>
 
               {/* ================= ORBITING 3D SOCIAL ICONS ================= */}
-              {/* Left: Community / Users Orb */}
               <g className={styles.orbUsers} filter="url(#purpleGlow)">
                 <circle cx="64" cy="145" r="22" fill="url(#orbGrad)" stroke="#d8b4fe" strokeWidth="1.2" />
-                {/* Users icon representation */}
                 <circle cx="64" cy="140" r="5" fill="#ffffff" />
                 <path d="M 54 154 C 54 149, 58 147, 64 147 C 70 147, 74 149, 74 154 Z" fill="#ffffff" />
               </g>
 
-              {/* Top-Right: Star / Achievement Orb */}
               <g className={styles.orbStar} filter="url(#purpleGlow)">
                 <circle cx="284" cy="105" r="18" fill="url(#orbGrad)" stroke="#e9d5ff" strokeWidth="1" />
-                {/* Star icon */}
                 <polygon
                   points="284,97 286.5,103 293,103.5 288,107.5 289.5,114 284,110 278.5,114 280,107.5 275,103.5 281.5,103"
                   fill="#ffffff"
                 />
               </g>
 
-              {/* Middle-Right: Megaphone Orb */}
               <g className={styles.orbHorn} filter="url(#purpleGlow)">
                 <circle cx="270" cy="172" r="17" fill="url(#orbGrad)" stroke="#d8b4fe" strokeWidth="1" />
-                {/* Megaphone icon */}
                 <path d="M 264 170 L 273 166 L 274 178 L 264 174 Z" fill="#ffffff" />
                 <rect x="262" y="169" width="3" height="6" rx="1" fill="#ffffff" />
                 <path d="M 267 175 L 269 180" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
               </g>
 
-              {/* Bottom-Right: Heart Orb */}
               <g className={styles.orbHeart} filter="url(#purpleGlow)">
                 <circle cx="295" cy="226" r="16" fill="url(#orbGrad)" stroke="#f472b6" strokeWidth="1" />
-                {/* Heart icon */}
                 <path
                   d="M 295 233 L 289 227 C 286 224, 287 220, 291 220 C 293 220, 294.5 221.5, 295 222.5 C 295.5 221.5, 297 220, 299 220 C 303 220, 304 224, 301 227 Z"
                   fill="#ffffff"
@@ -273,18 +357,71 @@ export const FollowEarnBanner = ({
               <div className={styles.giftIconBadge}>
                 <Gift size={20} strokeWidth={2.2} />
               </div>
-              <p className={styles.rewardNotice}>
-                Participate in eligible social campaigns and unlock rewards.
-              </p>
+              <div>
+                <span className={styles.campaignBadge}>
+                  <Sparkles size={11} /> Eligible Campaign
+                </span>
+                <p className={styles.rewardNotice}>
+                  {currentChannel.campaign}
+                </p>
+                <span className={styles.campaignStatusText}>
+                  {currentChannel.status}
+                </span>
+              </div>
             </div>
 
             <div className={styles.rewardAmountContainer}>
-              <div className={styles.rewardAmount}>{rewardAmount}</div>
-              <div className={styles.rewardSubtext}>{rewardCampaign}</div>
+              <div className={styles.rewardAmount}>{currentChannel.rewardAmount} DEMO</div>
+              <div className={styles.rewardSubtext}>Available for {currentChannel.name} members</div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Social Campaign Quests Modal */}
+      <Modal
+        isOpen={isQuestsModalOpen}
+        onClose={() => setIsQuestsModalOpen(false)}
+        title={
+          <>
+            <Users size={18} color="#c084fc" />
+            <span>Community Quests Discovery</span>
+          </>
+        }
+        subtitle="Participate in verified community quests to unlock SVE bonus allocations"
+        maxWidth="580px"
+      >
+        <div className={styles.questList}>
+          {channels.map((ch) => {
+            const isClaimed = completedQuests.includes(ch.id);
+            return (
+              <div key={ch.id} className={styles.questCard}>
+                <div className={styles.questInfo}>
+                  <div className={styles.questName}>{ch.name}: {ch.campaign}</div>
+                  <p className={styles.questDesc}>{ch.questDesc}</p>
+                </div>
+
+                <div className={styles.questRight}>
+                  <span className={styles.questRewardBadge}>{ch.rewardAmount} DEMO</span>
+                  {isClaimed ? (
+                    <span className={styles.questClaimedBtn}>
+                      <Check size={14} /> Claimed
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.questActionBtn}
+                      onClick={() => handleSimulateClaim(ch.id)}
+                    >
+                      Simulate Verify
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Gift, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import { Gift, Check, RotateCcw, Sparkles } from 'lucide-react';
 import styles from './DailyBonusBanner.module.css';
 
 /**
@@ -8,9 +8,11 @@ import styles from './DailyBonusBanner.module.css';
  * Implements Banner 05 for VELOOP Rewards: "Your Daily Bonus Is Waiting"
  * Features:
  * - Premium dark navy & gold aesthetic on #161827
- * - Large 3D gift box with glowing VE coins and ambient light rays
- * - "Today's Bonus" reward card (+25 GEMS, Available Now)
- * - 7-Day streak visualization with 6 days completed checkmarks
+ * - Functional claim flow with persistence via localStorage
+ * - Dynamic 7-day streak state transition (Day 6 → Day 7 completed)
+ * - Subtle celebration animation on coins & day 7 bubble
+ * - Repeated claim prevention in the same session/day
+ * - Discreet "Reset Demo" option for effortless evaluation
  * - Responsive 3-column desktop to mobile layout
  */
 export const DailyBonusBanner = ({
@@ -27,7 +29,42 @@ export const DailyBonusBanner = ({
   streakMessage = 'Come back tomorrow!',
   onCtaClick = () => {},
 }) => {
+  const [isClaimed, setIsClaimed] = useState(() => {
+    try {
+      return localStorage.getItem('veloop_daily_bonus_claimed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [justClaimed, setJustClaimed] = useState(false);
+
+  const activeCompletedDays = isClaimed ? totalDays : completedDays;
   const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
+
+  const handleClaim = (e) => {
+    if (isClaimed) return;
+    setIsClaimed(true);
+    setJustClaimed(true);
+    try {
+      localStorage.setItem('veloop_daily_bonus_claimed', 'true');
+    } catch {
+      // localStorage fallback handled gracefully
+    }
+    if (onCtaClick) onCtaClick(e);
+    setTimeout(() => {
+      setJustClaimed(false);
+    }, 1200);
+  };
+
+  const handleReset = () => {
+    setIsClaimed(false);
+    setJustClaimed(false);
+    try {
+      localStorage.removeItem('veloop_daily_bonus_claimed');
+    } catch {
+      // ignore
+    }
+  };
 
   return (
     <div className={styles.bannerWrapper}>
@@ -55,16 +92,37 @@ export const DailyBonusBanner = ({
             {/* Subtitle / Description */}
             <p className={styles.description}>{description}</p>
 
+            {/* Claimed Notification */}
+            {isClaimed && (
+              <div className={styles.claimedAlert} role="status">
+                <Check size={15} color="#34d399" />
+                <span>Daily Bonus Claimed • +25 GEMS Credited!</span>
+              </div>
+            )}
+
             {/* CTA Button */}
-            <button
-              type="button"
-              className={styles.ctaButton}
-              onClick={onCtaClick}
-              aria-label="Claim your daily bonus"
-            >
-              <span>{ctaText}</span>
-              <Gift size={18} strokeWidth={2.4} />
-            </button>
+            {isClaimed ? (
+              <button
+                type="button"
+                className={`${styles.ctaButton} ${styles.ctaButtonClaimed}`}
+                disabled
+                aria-disabled="true"
+                aria-label="Bonus already claimed for today"
+              >
+                <Check size={18} strokeWidth={2.5} />
+                <span>Bonus Claimed</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={styles.ctaButton}
+                onClick={handleClaim}
+                aria-label="Claim your daily bonus"
+              >
+                <span>{ctaText}</span>
+                <Gift size={18} strokeWidth={2.4} />
+              </button>
+            )}
           </div>
 
           {/* ================= CENTER COLUMN: 3D GIFT BOX & VE COINS ================= */}
@@ -112,7 +170,7 @@ export const DailyBonusBanner = ({
 
                 {/* Light Rays Beam Gradient */}
                 <linearGradient id="lightRayGrad" x1="180" y1="50" x2="180" y2="140" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#fef08a" stopOpacity="0.8" />
+                  <stop offset="0%" stopColor="#fef08a" stopOpacity={isClaimed ? '0.95' : '0.8'} />
                   <stop offset="60%" stopColor="#f59e0b" stopOpacity="0.3" />
                   <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
                 </linearGradient>
@@ -128,7 +186,7 @@ export const DailyBonusBanner = ({
               <polygon
                 points="180,60 135,130 225,130"
                 fill="url(#lightRayGrad)"
-                opacity="0.85"
+                opacity={isClaimed ? '1' : '0.85'}
                 filter="url(#goldGlowFilter)"
               />
 
@@ -178,21 +236,18 @@ export const DailyBonusBanner = ({
                 />
 
                 {/* Golden Bow Ribbons on Top */}
-                {/* Left Bow Loop */}
                 <path
                   d="M 170 108 C 142 88, 140 120, 172 116 Z"
                   fill="url(#ribbonGrad)"
                   stroke="#fef08a"
                   strokeWidth="0.8"
                 />
-                {/* Right Bow Loop */}
                 <path
                   d="M 188 108 C 218 88, 220 120, 186 116 Z"
                   fill="url(#ribbonGrad)"
                   stroke="#fef08a"
                   strokeWidth="0.8"
                 />
-                {/* Center Bow Knot */}
                 <circle cx="179" cy="112" r="7" fill="url(#ribbonGrad)" stroke="#ffffff" strokeWidth="0.8" />
 
                 {/* Central Embossed "VE" Emblem on Gift Box */}
@@ -221,8 +276,7 @@ export const DailyBonusBanner = ({
               </g>
 
               {/* ================= FLOATING GOLDEN VE COINS ================= */}
-              {/* Coin Left */}
-              <g className={styles.coinLeft} filter="url(#goldGlowFilter)">
+              <g className={`${styles.coinLeft} ${isClaimed ? styles.coinCelebrate : ''}`} filter="url(#goldGlowFilter)">
                 <ellipse cx="78" cy="226" rx="19" ry="17" fill="url(#goldCoin)" stroke="#fef08a" strokeWidth="1.2" />
                 <ellipse cx="78" cy="226" rx="14" ry="12" fill="none" stroke="#fde68a" strokeWidth="0.7" opacity="0.6" />
                 <text
@@ -238,8 +292,7 @@ export const DailyBonusBanner = ({
                 </text>
               </g>
 
-              {/* Coin Center Base */}
-              <g className={styles.coinCenter} filter="url(#goldGlowFilter)">
+              <g className={`${styles.coinCenter} ${isClaimed ? styles.coinCelebrate : ''}`} filter="url(#goldGlowFilter)">
                 <ellipse cx="140" cy="246" rx="17" ry="15" fill="url(#goldCoin)" stroke="#fef08a" strokeWidth="1.2" />
                 <text
                   x="140"
@@ -254,8 +307,7 @@ export const DailyBonusBanner = ({
                 </text>
               </g>
 
-              {/* Coin Right Base */}
-              <g className={styles.coinRight} filter="url(#goldGlowFilter)">
+              <g className={`${styles.coinRight} ${isClaimed ? styles.coinCelebrate : ''}`} filter="url(#goldGlowFilter)">
                 <ellipse cx="282" cy="228" rx="19" ry="17" fill="url(#goldCoin)" stroke="#fef08a" strokeWidth="1.2" />
                 <ellipse cx="282" cy="228" rx="14" ry="12" fill="none" stroke="#fde68a" strokeWidth="0.7" opacity="0.6" />
                 <text
@@ -272,7 +324,7 @@ export const DailyBonusBanner = ({
               </g>
 
               {/* Sparkles / Twinkles */}
-              <g fill="#fef08a" opacity="0.8">
+              <g fill="#fef08a" opacity={isClaimed ? '1' : '0.8'}>
                 <circle cx="110" cy="80" r="2.5" className={styles.sparkleStar} />
                 <circle cx="245" cy="74" r="2.2" className={styles.sparkleStar} />
                 <circle cx="160" cy="50" r="3" className={styles.sparkleStar} />
@@ -287,8 +339,15 @@ export const DailyBonusBanner = ({
               <div className={styles.bonusLabel}>TODAY'S BONUS</div>
               <div className={styles.bonusAmount}>{bonusAmount}</div>
               <div className={styles.bonusStatus}>
-                <span>{bonusStatus}</span>
-                <span className={styles.statusDot} />
+                <span>{isClaimed ? 'Claimed Today' : bonusStatus}</span>
+                <span
+                  className={styles.statusDot}
+                  style={
+                    isClaimed
+                      ? { backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }
+                      : undefined
+                  }
+                />
               </div>
             </div>
 
@@ -301,7 +360,8 @@ export const DailyBonusBanner = ({
               {/* Streak Track */}
               <div className={styles.streakTrack}>
                 {daysArray.map((day) => {
-                  const isCompleted = day <= completedDays;
+                  const isCompleted = day <= activeCompletedDays;
+                  const isClaimedDay = day === totalDays && justClaimed;
 
                   return (
                     <div key={day} className={styles.streakDay}>
@@ -309,7 +369,7 @@ export const DailyBonusBanner = ({
                       <div
                         className={`${styles.dayBubble} ${
                           isCompleted ? styles.dayCompleted : styles.dayPending
-                        }`}
+                        } ${isClaimedDay ? styles.dayJustClaimed : ''}`}
                       >
                         {isCompleted ? (
                           <Check size={13} strokeWidth={3} />
@@ -325,10 +385,27 @@ export const DailyBonusBanner = ({
               {/* Footer text */}
               <div className={styles.streakFooter}>
                 <span className={styles.streakCompletedText}>
-                  {completedDays} Days Completed
+                  {activeCompletedDays} Days Completed
                 </span>
-                <span className={styles.streakPromptText}>{streakMessage}</span>
+                <span className={styles.streakPromptText}>
+                  {isClaimed ? 'Streak Bonus Activated! 🎉' : streakMessage}
+                </span>
               </div>
+
+              {/* Subtle Reset Option for Mentors / Reviewers */}
+              {isClaimed && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    type="button"
+                    className={styles.resetStreakBtn}
+                    onClick={handleReset}
+                    title="Reset streak demo state"
+                  >
+                    <RotateCcw size={11} />
+                    <span>Reset Demo</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
