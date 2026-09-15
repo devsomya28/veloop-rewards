@@ -36,29 +36,37 @@ export const DailyBonusBanner = ({
       return false;
     }
   });
+  const [isOpening, setIsOpening] = useState(false);
   const [justClaimed, setJustClaimed] = useState(false);
 
   const activeCompletedDays = isClaimed ? totalDays : completedDays;
   const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
 
   const handleClaim = (e) => {
-    if (isClaimed) return;
-    setIsClaimed(true);
-    setJustClaimed(true);
-    try {
-      localStorage.setItem('veloop_daily_bonus_claimed', 'true');
-    } catch {
-      // localStorage fallback handled gracefully
-    }
-    if (onCtaClick) onCtaClick(e);
+    if (isClaimed || isOpening) return;
+    setIsOpening(true);
+
+    // 1. Gift / reward animation triggers
     setTimeout(() => {
-      setJustClaimed(false);
-    }, 1200);
+      setIsClaimed(true);
+      setJustClaimed(true);
+      setIsOpening(false);
+      try {
+        localStorage.setItem('veloop_daily_bonus_claimed', 'true');
+      } catch {
+        // localStorage fallback handled gracefully
+      }
+      if (onCtaClick) onCtaClick(e);
+      setTimeout(() => {
+        setJustClaimed(false);
+      }, 1500);
+    }, 600);
   };
 
   const handleReset = () => {
     setIsClaimed(false);
     setJustClaimed(false);
+    setIsOpening(false);
     try {
       localStorage.removeItem('veloop_daily_bonus_claimed');
     } catch {

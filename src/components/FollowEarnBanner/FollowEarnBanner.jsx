@@ -362,17 +362,17 @@ export const FollowEarnBanner = ({
                   <Sparkles size={11} /> Eligible Campaign
                 </span>
                 <p className={styles.rewardNotice}>
-                  {currentChannel.campaign}
+                  Participate in eligible social campaigns
                 </p>
                 <span className={styles.campaignStatusText}>
-                  {currentChannel.status}
+                  {currentChannel.campaign} • {currentChannel.status}
                 </span>
               </div>
             </div>
 
             <div className={styles.rewardAmountContainer}>
               <div className={styles.rewardAmount}>{currentChannel.rewardAmount} DEMO</div>
-              <div className={styles.rewardSubtext}>Available for {currentChannel.name} members</div>
+              <div className={styles.rewardSubtext}>Demo reward allocation. Following alone does not guarantee rewards.</div>
             </div>
           </div>
         </div>

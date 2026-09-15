@@ -28,16 +28,32 @@ export const WatchAdBanner = ({
   ctaText = 'Watch & Earn',
   onCtaClick = () => {},
 }) => {
-  const [adState, setAdState] = useState('idle'); // 'idle' | 'watching' | 'completed'
-  const [countdown, setCountdown] = useState(5);
+  // States: 'idle' | 'preparing' | 'viewing' | 'completed' | 'reward'
+  const [adState, setAdState] = useState('idle');
+  const [countdown, setCountdown] = useState(3);
   const [progress, setProgress] = useState(0);
   const [walletBalance, setWalletBalance] = useState(120);
   const [earnedVes, setEarnedVes] = useState(0);
+  const [isCoinFlying, setIsCoinFlying] = useState(false);
 
+  // State 1 (Preparing) -> State 2 (Viewing)
+  useEffect(() => {
+    let timer = null;
+    if (adState === 'preparing') {
+      timer = setTimeout(() => {
+        setAdState('viewing');
+        setProgress(0);
+        setCountdown(3);
+      }, 1200);
+    }
+    return () => clearTimeout(timer);
+  }, [adState]);
+
+  // State 2 (Viewing): simulated progress
   useEffect(() => {
     let interval = null;
-    if (adState === 'watching') {
-      const duration = 5000;
+    if (adState === 'viewing') {
+      const duration = 3000;
       const stepTime = 50;
       const totalSteps = duration / stepTime;
       let currentStep = 0;
@@ -51,9 +67,8 @@ export const WatchAdBanner = ({
 
         if (currentStep >= totalSteps) {
           clearInterval(interval);
+          // Transition to State 3: Ad Completed
           setAdState('completed');
-          setEarnedVes((prev) => prev + 38);
-          setWalletBalance((prev) => prev + 38);
         }
       }, stepTime);
     }
@@ -62,20 +77,41 @@ export const WatchAdBanner = ({
     };
   }, [adState]);
 
+  // State 3 (Completed) -> State 4 (Reward +38 VEs DEMO)
+  useEffect(() => {
+    let timer = null;
+    if (adState === 'completed') {
+      timer = setTimeout(() => {
+        setAdState('reward');
+        setIsCoinFlying(true);
+        setEarnedVes((prev) => prev + 38);
+        setWalletBalance((prev) => prev + 38);
+
+        const stopFlyTimer = setTimeout(() => {
+          setIsCoinFlying(false);
+        }, 1200);
+
+        return () => clearTimeout(stopFlyTimer);
+      }, 900);
+    }
+    return () => clearTimeout(timer);
+  }, [adState]);
+
   const handleStartWatch = (e) => {
-    if (adState === 'watching') return;
-    setAdState('watching');
+    if (adState === 'preparing' || adState === 'viewing' || adState === 'completed') return;
+    setAdState('preparing');
     setProgress(0);
-    setCountdown(5);
+    setCountdown(3);
     if (onCtaClick) onCtaClick(e);
   };
 
   const handleReset = () => {
     setAdState('idle');
     setProgress(0);
-    setCountdown(5);
+    setCountdown(3);
     setWalletBalance(120);
     setEarnedVes(0);
+    setIsCoinFlying(false);
   };
 
   const scrubberWidth = Math.max(4, Math.round((progress / 100) * 150));
@@ -110,23 +146,49 @@ export const WatchAdBanner = ({
             {/* Subtitle / Description */}
             <p className={styles.description}>{description}</p>
 
-            {/* Simulated Live Alert / Completion Status */}
-            {adState === 'watching' && (
+            {/* STATE 1: Preparing Demo Ad */}
+            {adState === 'preparing' && (
               <div className={styles.liveBadge} role="status">
-                <span className={styles.pulseDot} />
-                <span>Simulating Partner Ad (0:0{countdown}s remaining)</span>
+                <span className={styles.spinnerDot} />
+                <span>Preparing Demo Ad...</span>
               </div>
             )}
 
+            {/* STATE 2: Viewing / Progress */}
+            {adState === 'viewing' && (
+              <div className={styles.liveBadge} role="status">
+                <span className={styles.pulseDot} />
+                <span>Simulating Demo Ad (0:0{countdown}s remaining)</span>
+              </div>
+            )}
+
+            {/* STATE 3: Ad Completed */}
             {adState === 'completed' && (
+              <div className={styles.completedBadge} role="status">
+                <CheckCircle2 size={15} color="#34d399" />
+                <span>Ad Completed</span>
+              </div>
+            )}
+
+            {/* STATE 4: Reward +38 VEs DEMO */}
+            {adState === 'reward' && (
               <div className={styles.rewardAlert} role="status">
                 <div className={styles.rewardLeft}>
-                  <CheckCircle2 size={18} color="#34d399" />
+                  <Sparkles size={16} color="#fbbf24" />
                   <span>
-                    Ad Completed! <strong className={styles.rewardHighlight}>+38 VEs Earned</strong>
+                    Reward: <strong className={styles.rewardHighlight}>+38 VEs DEMO</strong>
                   </span>
                 </div>
-                <span className={styles.balancePill}>Balance: {walletBalance} VEs</span>
+                <div className={`${styles.balancePill} ${isCoinFlying ? styles.balancePillPulse : ''}`}>
+                  Balance: <strong>{walletBalance} VEs</strong>
+                </div>
+              </div>
+            )}
+
+            {/* Flying coin particle element */}
+            {isCoinFlying && (
+              <div className={styles.flyingCoinParticle} aria-hidden="true">
+                <span>🪙</span> +38 VEs
               </div>
             )}
 
@@ -148,26 +210,32 @@ export const WatchAdBanner = ({
             </div>
 
             {/* CTA Buttons based on ad flow state */}
-            {adState === 'watching' ? (
+            {adState === 'preparing' || adState === 'viewing' || adState === 'completed' ? (
               <button
                 type="button"
                 className={`${styles.ctaButton} ${styles.ctaButtonDisabled}`}
                 disabled
                 aria-disabled="true"
-                aria-label="Ad is currently playing, reward action disabled"
+                aria-label="Demo ad is currently in progress"
               >
                 <span className={styles.pulseDot} style={{ background: '#ffffff' }} />
-                <span>Playing Ad (0:0{countdown})...</span>
+                <span>
+                  {adState === 'preparing'
+                    ? 'Preparing Demo Ad...'
+                    : adState === 'completed'
+                    ? 'Ad Completed'
+                    : `Simulating Demo Ad (0:0${countdown}s)...`}
+                </span>
               </button>
-            ) : adState === 'completed' ? (
+            ) : adState === 'reward' ? (
               <div className={styles.ctaGroup}>
                 <button
                   type="button"
                   className={styles.ctaButton}
                   onClick={handleStartWatch}
-                  aria-label="Watch another advertisement to earn more VEs"
+                  aria-label="Watch another advertisement demo"
                 >
-                  <span>Watch Another (+38 VEs)</span>
+                  <span>Watch Another (+38 VEs DEMO)</span>
                   <ArrowRight size={17} className={styles.ctaArrow} strokeWidth={2.4} />
                 </button>
                 <button
@@ -177,7 +245,7 @@ export const WatchAdBanner = ({
                   aria-label="Reset ad demo flow"
                 >
                   <RotateCcw size={14} />
-                  <span>Reset</span>
+                  <span>Reset Demo</span>
                 </button>
               </div>
             ) : (
@@ -308,13 +376,13 @@ export const WatchAdBanner = ({
                   <circle
                     cx="160"
                     cy="132"
-                    r={adState === 'watching' ? '70' : '55'}
+                    r={adState === 'viewing' || adState === 'preparing' ? '70' : '55'}
                     fill="#2563eb"
-                    opacity={adState === 'watching' ? '0.3' : '0.18'}
+                    opacity={adState === 'viewing' || adState === 'preparing' ? '0.3' : '0.18'}
                     filter="url(#cyanGlow)"
                   />
 
-                  {/* STATE A: IDLE - Play Button */}
+                  {/* STATE 0: IDLE - Play Button */}
                   {adState === 'idle' && (
                     <g className={styles.playBtnGlow}>
                       <circle
@@ -330,8 +398,35 @@ export const WatchAdBanner = ({
                     </g>
                   )}
 
-                  {/* STATE B: WATCHING - Animated Equalizer Waves & Countdown */}
-                  {adState === 'watching' && (
+                  {/* STATE 1: PREPARING - Spinner Beam */}
+                  {adState === 'preparing' && (
+                    <g filter="url(#cyanGlow)">
+                      <circle
+                        cx="160"
+                        cy="125"
+                        r="22"
+                        fill="none"
+                        stroke="#38bdf8"
+                        strokeWidth="3"
+                        strokeDasharray="40 70"
+                      >
+                        <animateTransform
+                          attributeName="transform"
+                          type="rotate"
+                          from="0 160 125"
+                          to="360 160 125"
+                          dur="0.9s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <text x="160" y="165" textAnchor="middle" fill="#bae6fd" fontSize="11" fontWeight="700">
+                        Preparing Demo Ad...
+                      </text>
+                    </g>
+                  )}
+
+                  {/* STATE 2: VIEWING - Animated Equalizer Waves & Countdown */}
+                  {adState === 'viewing' && (
                     <g filter="url(#cyanGlow)">
                       {/* Sponsor Pill in Video */}
                       <rect x="70" y="72" width="172" height="18" rx="9" fill="rgba(15, 23, 42, 0.85)" stroke="#38bdf8" strokeWidth="0.8" />
@@ -378,17 +473,29 @@ export const WatchAdBanner = ({
                     </g>
                   )}
 
-                  {/* STATE C: COMPLETED - Glowing Checkmark & Reward Credited */}
+                  {/* STATE 3: COMPLETED - Glowing Checkmark */}
                   {adState === 'completed' && (
                     <g filter="url(#cyanGlow)">
-                      <circle cx="156" cy="116" r="24" fill="#047857" stroke="#34d399" strokeWidth="2" />
-                      {/* Checkmark */}
-                      <path d="M 146 116 L 153 123 L 167 109" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <circle cx="156" cy="116" r="22" fill="#047857" stroke="#34d399" strokeWidth="2" />
+                      <path d="M 147 116 L 153 122 L 166 109" stroke="#ffffff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                       <text x="156" y="156" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="800">
-                        Ad Completed!
+                        Ad Completed
                       </text>
-                      <text x="156" y="172" textAnchor="middle" fill="#fcd34d" fontSize="11.5" fontWeight="700">
-                        +38 VEs Credited
+                    </g>
+                  )}
+
+                  {/* STATE 4: REWARD - +38 VEs DEMO Reveal */}
+                  {adState === 'reward' && (
+                    <g filter="url(#cyanGlow)">
+                      <circle cx="156" cy="112" r="22" fill="url(#playBtnGrad)" stroke="#fcd34d" strokeWidth="2" />
+                      <text x="156" y="117" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="900">
+                        VE
+                      </text>
+                      <text x="156" y="150" textAnchor="middle" fill="#34d399" fontSize="12.5" fontWeight="800">
+                        +38 VEs DEMO
+                      </text>
+                      <text x="156" y="168" textAnchor="middle" fill="#94a3b8" fontSize="9.5" fontWeight="600">
+                        Credited to Balance
                       </text>
                     </g>
                   )}

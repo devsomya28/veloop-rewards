@@ -58,8 +58,8 @@ export const LeaderboardBanner = ({
   const fullStandings = [
     { rank: '01', name: 'User A', score: '12,450 VEs', isTop: true, badge: '🥇' },
     { rank: '02', name: 'User B', score: '11,820 VEs', isTop: true, badge: '🥈' },
-    { rank: '03', name: 'User C', score: '10,970 VEs', isTop: true, badge: '🥉' },
-    { rank: '04', name: 'You (User D)', score: '10,690 VEs', isCurrentUser: true },
+    { rank: '03', name: 'You (User C)', score: '11,370 VEs', isTop: true, badge: '🥉', isCurrentUser: true },
+    { rank: '04', name: 'User D', score: '10,690 VEs' },
     { rank: '05', name: 'Alex_Crypto', score: '9,840 VEs' },
     { rank: '06', name: 'Sarah_K', score: '9,210 VEs' },
     { rank: '07', name: 'DevSomya', score: '8,950 VEs' },
@@ -102,7 +102,7 @@ export const LeaderboardBanner = ({
 
             {/* Current User Standing Pill */}
             <div className={styles.userStandingPill}>
-              <span>Your Standing: <strong>#4 • 10,690 VEs</strong></span>
+              <span>Your Standing: <strong>#03 • 11,370 VEs</strong></span>
               <span className={styles.momentumTag}>
                 <TrendingUp size={11} strokeWidth={2.5} /> +1 this week
               </span>
@@ -414,28 +414,28 @@ export const LeaderboardBanner = ({
         <div className={styles.modalUserHighlight}>
           <div className={styles.highlightTop}>
             <div className={styles.highlightUser}>
-              <div className={styles.userAvatarCircle}>U</div>
+              <div className={styles.userAvatarCircle}>C</div>
               <div>
-                <div className={styles.highlightName}>You (User D)</div>
-                <div className={styles.highlightScore}>10,690 VEs Earned</div>
+                <div className={styles.highlightName}>You (User C)</div>
+                <div className={styles.highlightScore}>11,370 VEs Earned</div>
               </div>
             </div>
 
             {/* Rank Movement Indicator */}
             <div className={styles.rankMovementBadge}>
               <TrendingUp size={14} />
-              <span>Rank Movement: #4 → #3</span>
+              <span>Rank Movement: #03 → #02</span>
             </div>
           </div>
 
           {/* Progress to Next Rank */}
           <div className={styles.progressSection}>
             <div className={styles.progressMeta}>
-              <span>Target: Rank #3 (User C • 10,970 VEs)</span>
-              <span className={styles.progressNeeded}>280 VEs needed</span>
+              <span>Target: Rank #2 (User B • 11,820 VEs)</span>
+              <span className={styles.progressNeeded}>450 VEs to reach #2</span>
             </div>
-            <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={85} aria-valuemin={0} aria-valuemax={100}>
-              <div className={styles.progressBarFill} style={{ width: '85%' }} />
+            <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={72} aria-valuemin={0} aria-valuemax={100}>
+              <div className={styles.progressBarFill} style={{ width: '72%' }} />
             </div>
           </div>
         </div>
